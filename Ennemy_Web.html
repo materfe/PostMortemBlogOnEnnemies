@@ -1,0 +1,182 @@
+<meta charset="utf-8">
+
+ <style>
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        /* Description lists */
+        p {
+            margin-bottom: 15px;
+        }
+		
+		h2::before {
+		content: none !important;
+		}
+		
+		h3::before {
+		content: none !important;
+		}
+		
+        .btn {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 15px;
+            color: #ffffff;
+            background-color: #007BFF;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer styles */
+        footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 30px;
+        }
+
+	.issue {
+        color: #d9534f; /* Bootstrap-style red */
+        font-weight: bold;
+    	}
+
+	.video-container {
+        text-align: center; /* Center the video horizontally */
+        margin: 20px 0; /* Add vertical spacing above and below */
+        max-width: 800px; /* Optional: Set a max width to limit size */
+        margin-left: auto; /* Center the container horizontally */
+        margin-right: auto;
+    	}
+
+</style>
+
+
+
+<div class="container">
+
+
+<header>
+    <h1>Ennemies and Unreal Engine's Behavior Tree</h1>
+    <p>Context</p>
+</header>
+
+<p>For the purpose of the SAE Institute's school project, we made a Zelda Like game using Unreal Engine.
+ Ennemies were needed in this project and so, it was up to me to design and make them reality.</p>
+	
+<header>
+<h2>1.1	Presentation of an ennemy made :</h2>
+</header>
+	
+<p>The following footage will show you one of the different ennemies made through the production phase of this project.</p>
+
+<img src="Images/SquidDemogif.gif" alt="portal effect gif" width="800">
+
+<p>As an explanation, this ennemy in particular has two types of behavior.
+The first one(on the left) is a <u>simple shooting ennemy with a certain range of detection</u>.
+Once the Player seen, it will concentrate and eventually shoot its projectile, **a straight forward missile toward the player's position**.
+The second behavoir(on the right), focuses on <u>mortar shots and works the vertical aspect of this project</u>.
+It targets the player the same way as the first one but instead, shoots **a missile with a curve trajectory** toward the player's postion and leave a puddle on the ground that will slow the player if he walks in it.</p>
+
+<header>
+<h2>1.2 Explanation in details :</h2>
+</header>
+
+<p>Now that we know what this ennemy can do, lets analyze and dive deeper in details about how it works for both behavior :</p>
+
+<header>
+	<h3>1.2.1 Explanation of the first behavior : simple straight forward shooting ennemy</h3>
+</header>
+
+<p>This first behavior is devided in <u>2 different sections</u> : **seeking the player** and **shooting at him**.
+ The first section makes the ennemy **rotates infinitely until it has found a player to shoot at**.
+ The second section makes him turn toward the player, follows his movements and **prepares his shot** shown by the fx of vortex in front of him as well as the line growing red.
+ Once ready, he shoots a simple projectile straight forward with its own velocity and size.</p>
+
+<img src="Images/SquidBasicGif.gif" alt="portal effect gif" width="800">
+
+<header>
+	<h3>1.2.2 Explanation of the second behavior : simple mortar shooting ennemy</h3>
+</header>
+
+<p>This second behavior is a **more difficult variant of the first behavior**.
+ It possesses the same method to seek the player but the second section is much different.
+ In fact, when this variante is ready to shoot, it calculates a mortar shoot trajectory toward the player and shoots a new kind of projectile.
+ This new projectile makes a puddle on contact with the ground.
+ This allows for a more strategic approach since that puddle can slow the player and unlock certain scenarios of **Level Deign** that wouldnt be possible otherwise.</p>
+
+<img src="Images/SquidStrongGif.gif" alt="portal effect gif" width="800">
+
+
+
+<header>
+	<h1>Behavior Tree</h1>
+</header>
+
+<header>
+	<h2>2.1 The Tree itself and the nodes</h2>
+</header>
+
+<p>For those ennemies to work, the best workflow was to use the **Behavior Tree** from **Unreal Engine**.
+ But, this system requires knowledge as followed.
+ This Behavior Tree work with **Sequences**, **Selectors** and **Tasks**.
+ For this usage, sequences weren't useful.
+ But in case it is needed for anything else, **sequences are made to follow a set of instructions each frame for example**.
+ Selectors **select between two tasks or sequences depending on a factor**(could be a true, a false, a variable set to a certain number, etc..).
+ And finally, tasks are **simple set of instruction you code using unreal engine's blueprint :**.</p>
+
+<img src="Images/BlueprintExample.png" alt="portal effect gif" width="800">
+
+<p>Over all, a behavior tree can quickly become quite huge once you take in conditions and multiple choices of behaviors for your ennemy. 
+ This is the behavior tree active for this squid ennemy in this project :</p>
+
+<img src="Images/BehaviorTreeExample.png" alt="portal effect gif" width="800">
+
+<p>You can't see the nodes, but the matter is how this looks likes over all. 
+ If you happen to be curious about what's inside, know that each "bloc" with its own tree represents a set of instructions for a variante of this ennemy, some shooting faster, some shooting three missiles, etc...</p>
+
+<header>
+	<h2>2.2 The blackboard</h2>
+</header>
+
+<p>Unreal Engine's behavior tree works with the help of a **Blackboard**.
+ A convenient way to pass and stock all the variables necessary within the behavior tree itself such as the conditions for the selectors.
+ It also allows your objects to "talk" to the behavior tree in their code wihtout having to use something else.
+ But it has a default : every variable set is hard coded to be proprely set to the blackboard in runtime, one small error in the name and everything breaks.
+ Here is an example showcasing this issue :</p>
+ 
+<img src="Images/Hardcode.png" alt="portal effect gif" width="800">
+
+<p>As you can see, we have to hard code a literal name and pass the value we want to change, on top of that, we have to do a cast which costs some performances.
+ Even if not much, it still is a cost.
+ Here is an example of the blackboard's visual and a detail for one of many vairables on it used for this ennemy :</p>
+ 
+<img src="Images/Blackboard.png" alt="portal effect gif" width="800">
+
+
+
+<header>
+        <h1>Final conclusion</h1>
+</header>
+
+<p>To conclude, this project allowed me to discover how to use Unreal Engine's behavior tree system.
+ But, to be fair, unless mistake were made, this system still costs a lot of performances and can't be used on too big games and plateforms since too much ennemis can quickly overload your computer.
+ Still, for our project, it was enough and even perfect and allowed us to have proper and precise control over our ennemies.
+ Though, for bigger projects, i would recomend searching in plugins for one with better efficiency and easier setup.</p>
+</div>
+
+
+
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js" charset="utf-8"></script><script src="https://morgan3d.github.io/markdeep/latest/markdeep.min.js" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
